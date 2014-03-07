@@ -1,0 +1,149 @@
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <queue>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include <string>
+
+#define REP(X, Y) for(int (X) = 0; (X) < (Y); ++(X))
+#define FOR(X, Y, Z) for(int (X) = (Y); (X) <= (Z); ++(X))
+#define RFOR(X, Y, Z) for(int (X) = (Y); (X) >= (Z); --(X))
+#define SZ(Z) ((int) (Z).size)
+#define ALL(W) (W).begin(), (W).end()
+#define RESET(C, V) memset(C, V, sizeof(C))
+#define PB push_back
+#define MP make_pair
+#define A first
+#define B second
+#define MX(Z, Y) Z = max((Z), (Y))
+#define MN(X, Y) X = min((X), (Y))
+#define FORIT(X, Y) for(typeof((Y).begin()) X = (Y).begin(); X != (Y).end(); X++)
+#define RFORIT(X, Y) for(typeof(Y).rbegin()) X = (Y).rbegin(); X != (Y).rend(); X++)
+#define INF (1 << 30)
+#define _Pi(i) printf("%d", i)
+#define _Pd(nd) printf("n.%d", d)
+#define _Pc(c) printf("%c", c)
+#define _Ps(s) printf("%s", s)
+#define _Si(i) scanf("%d", &i)
+#define _Sd(d) scanf("%d", &d)
+#define _Sc(c) scanf("%c", &c)
+#define _Ss(s) scanf("%s", &s)
+
+#define isOn(S, j) (S & (1 << j))
+#define setBit(S, j) (S |= (1 << j))
+#define clearBit(S, j) (S &= ~(1 << j))
+#define toggleBit(S, j) (S ^= (1 << j))
+#define lowBit(S) (S & (-S))
+#define setAll(S, n) (S = (1 << n) - 1)
+#define modulo(S, N) ((S) & (N - 1))
+#define isPowerOfTwo(S) (!(S & (S - 1)))
+#define nearestPowerOfTwo(S) ((int)pow(2.0, (int)((log((double)S) / log(2.0)) + 0.5)))
+#define turnOffLastBit(S) ((S) & (S - 1))
+#define turnOnLastZero(S) ((S) | (S + 1))
+#define turnOffLastConsecutiveBits(S) ((S) & (S + 1))
+#define turnOnLastConsecutiveZeroes(S) ((S) | (S - 1))
+
+using namespace std;
+
+typedef long long LL;
+typedef vector<int> vi;
+typedef vector<string> vs;
+typedef vector<double> vd;
+typedef pair<int, int> ii;
+typedef map<char, int> mci;
+typedef vector<ii> vii;
+typedef vector<vii> vvii;
+
+int marked[51][51] = {};
+string matrix[51];
+
+int dr[] = {1, 0, -1, 0};
+int dc[] = {0, 1, 0, -1};
+
+void floodfill(int r, int c, int R, int C, char current, map<char,int> &myMap){
+    if(r<0 || r>=R || c<0 || c>=C) return;
+    if(marked[r][c]) return;
+    if(matrix[r][c] != current && current != '.') return;
+
+    marked[r][c] = 1;
+    if(current == '.'){
+        current = matrix[r][c];
+        myMap[current]++;
+    }
+
+    REP(i,8){
+        floodfill(r+dr[i], c+dc[i], R, C, current, myMap);
+    }
+}
+
+bool cmp(pair<char,int> a, pair<char, int> b){
+    if(a.second > b.second){
+        return true;
+    }
+    else if(a.second < b.second){
+        return false;
+    }
+
+    return a.first < b.first;
+}
+
+int main(){
+    //freopen("in.txt","r",stdin);
+    int cases, r, c;
+    scanf("%d", &cases);
+    while(cases--){
+        scanf("%d %d", &r, &c);
+
+        map<char,int> myMap;
+
+        string str;
+        int index = 0;
+        REP(a, r){
+            cin >> str;
+            matrix[a] = str;
+        }
+
+        REP(a, r){
+            REP(b, c){
+                marked[a][b] = 0;
+            }
+        }
+
+        REP(a,r){
+            REP(b,c){
+                floodfill(a,b,r,c,'.',myMap);
+            }
+        }
+
+        vector<pair<char,int> > vp;
+
+        for(map<char,int>::iterator it = myMap.begin(); it != myMap.end(); it++){
+            pair<char,int> p = make_pair(it->first, it->second);
+            vp.PB(p);
+        }
+
+        sort(vp.begin(), vp.end());
+
+        printf("World #%d\n", i);
+
+        REP(x, vp.size()){
+            printf("%c: %d\n", vp[x].first, vp[x].second);
+        }
+    }
+    return 0;
+}
