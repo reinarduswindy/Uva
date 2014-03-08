@@ -106,7 +106,7 @@ int main(){
     //freopen("in.txt","r",stdin);
     int cases, r, c;
     scanf("%d", &cases);
-    while(cases--){
+    for(int i=1; i<=cases; i++){
         scanf("%d %d", &r, &c);
 
         map<char,int> myMap;
