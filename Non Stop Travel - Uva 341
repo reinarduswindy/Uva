@@ -1,0 +1,123 @@
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <queue>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cstring>
+#include <string>
+
+#define REP(X, Y) for(int (X) = 0; (X) < (Y); ++(X))
+#define FOR(X, Y, Z) for(int (X) = (Y); (X) <= (Z); ++(X))
+#define RFOR(X, Y, Z) for(int (X) = (Y); (X) >= (Z); --(X))
+#define SZ(Z) ((int) (Z).size)
+#define ALL(W) (W).begin(), (W).end()
+#define RESET(C, V) memset(C, V, sizeof(C))
+#define PB push_back
+#define MP make_pair
+#define A first
+#define B second
+#define MX(Z, Y) Z = max((Z), (Y))
+#define MN(X, Y) X = min((X), (Y))
+#define FORIT(X, Y) for(typeof((Y).begin()) X = (Y).begin(); X != (Y).end(); X++)
+#define RFORIT(X, Y) for(typeof(Y).rbegin()) X = (Y).rbegin(); X != (Y).rend(); X++)
+#define INF (1 << 30)
+#define _Pi(i) printf("%d", i)
+#define _Pd(nd) printf("n.%d", d)
+#define _Pc(c) printf("%c", c)
+#define _Ps(s) printf("%s", s)
+#define _Si(i) scanf("%d", &i)
+#define _Sd(d) scanf("%d", &d)
+#define _Sc(c) scanf("%c", &c)
+#define _Ss(s) scanf("%s", &s)
+
+#define isOn(S, j) (S & (1 << j))
+#define setBit(S, j) (S |= (1 << j))
+#define clearBit(S, j) (S &= ~(1 << j))
+#define toggleBit(S, j) (S ^= (1 << j))
+#define lowBit(S) (S & (-S))
+#define setAll(S, n) (S = (1 << n) - 1)
+#define modulo(S, N) ((S) & (N - 1))
+#define isPowerOfTwo(S) (!(S & (S - 1)))
+#define nearestPowerOfTwo(S) ((int)pow(2.0, (int)((log((double)S) / log(2.0)) + 0.5)))
+#define turnOffLastBit(S) ((S) & (S - 1))
+#define turnOnLastZero(S) ((S) | (S + 1))
+#define turnOffLastConsecutiveBits(S) ((S) & (S + 1))
+#define turnOnLastConsecutiveZeroes(S) ((S) | (S - 1))
+
+using namespace std;
+
+typedef long long LL;
+typedef vector<int> vi;
+typedef vector<string> vs;
+typedef vector<double> vd;
+typedef pair<int, int> ii;
+typedef map<char, int> mci;
+typedef vector<ii> vii;
+typedef vector<vii> vvii;
+
+int edgeTo[11];
+void printPath(int s, int t){
+    if(s == t){
+        printf("%d", s);
+        return;
+    }
+    printPath(s, edgeTo[t]);
+    printf(" %d", t);
+}
+
+int main(){
+    int NI, a, b, w, n, s, t, tc = 1;
+    vector<vii> AdjList;
+    //freopen("in.txt","r",stdin);
+    while((scanf("%d", &NI) == 1) && NI){
+        AdjList.assign(NI+1, vii());
+        for(a = 1; a<=NI; a++){
+            scanf("%d", &n);
+            REP(i,n){
+                scanf("%d %d", &b, &w);
+                AdjList[a].PB(ii(b,w));
+            }
+        }
+        scanf("%d %d", &s, &t);
+
+        vi dist(NI+1, INF);
+        dist[s] = 0;
+        memset(edgeTo, -1, sizeof(edgeTo));
+        edgeTo[s] = s;
+        priority_queue<ii, vector<ii>, greater<ii> > pq;
+        pq.push(ii(0,s));
+        while(!pq.empty()){
+            ii front = pq.top();
+            pq.pop();
+            int d = front.first;
+            int u = front.second;
+            if(d > dist[u]) continue;
+            REP(j, (int)AdjList[u].size()){
+                ii v = AdjList[u][j];
+                if(dist[u] + v.second < dist[v.first]){
+                    dist[v.first] = dist[u] + v.second;
+                    edgeTo[v.first] = u;
+                    pq.push(ii(dist[v.first], v.first));
+                }
+            }
+        }
+        printf("Case %d: Path = ", tc++);
+        printPath(s,t);
+        printf("; %d second delay\n", dist[t]);
+    }
+    return 0;
+}
